@@ -25,6 +25,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.spec
+*.ico
 
 # Testing & Coverage
 .pytest_cache/
