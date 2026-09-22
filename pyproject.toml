@@ -23,3 +23,8 @@ aparat-gui = "gui:main"
 
 [tool.setuptools]
 py-modules = ["core", "cli", "gui"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+

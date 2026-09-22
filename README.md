@@ -261,7 +261,6 @@ Contributions, bug reports, and feature requests are welcome!
 
 Developed and maintained by **Ali Bakhtiari** ([@alibakhtiari](https://github.com/alibakhtiari)).
 
-
 ---
 
 ## 📄 License

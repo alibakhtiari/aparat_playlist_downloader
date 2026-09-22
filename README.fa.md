@@ -259,7 +259,6 @@ aparat_playlist_downloader/
 
 طراحی و توسعه توسط **علی بختیاری** ([@alibakhtiari](https://github.com/alibakhtiari)).
 
-
 ---
 
 ## 📄 مجوز (License)
