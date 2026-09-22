@@ -7,8 +7,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](pyproject.toml)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20|%20Linux%20|%20macOS-lightgrey.svg)](https://github.com/alibakhtiari/aparat_playlist_downloader)
+[![Website](https://img.shields.io/badge/Website-aliib.ir-007acc?style=flat&logo=googlechrome&logoColor=white)](https://aliib.ir)
+[![WebABC](https://img.shields.io/badge/Agency-webabc.ir-ff5722?style=flat&logo=firefox&logoColor=white)](https://webabc.ir)
 
-**A modern, blazing-fast CLI and GUI downloader for Aparat videos and playlists.**
+**A modern, blazing-fast CLI and GUI downloader for Aparat videos and playlists with automatic quality detection and batch IDM export.**
 
 [English](README.md) | [فارسی](README.fa.md)
 
@@ -16,16 +18,41 @@
 
 ---
 
-## 🌟 Features
+## 📑 Table of Contents
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Supported Input Formats](#-supported-input-formats)
+- [Installation](#-installation)
+  - [Standalone Binaries (No Python Needed)](#standalone-executables-no-python-required)
+  - [Source Code Installation](#prerequisites-source-installation)
+- [Usage](#-usage)
+  - [Graphical User Interface (GUI)](#️-graphical-user-interface-gui)
+  - [Command Line Interface (CLI)](#-command-line-interface-cli)
+- [Python API Usage](#-python-api-usage)
+- [Project Structure](#-project-structure)
+- [Running Tests](#-running-tests)
+- [Contributing](#-contributing)
+- [Author & Links](#-author--maintainer)
+- [License](#-license)
 
-- **Universal Target Support**: Seamlessly download or export both **playlists** (by numeric ID or full URL) and **single videos** (by alphanumeric hash or full URL).
-- **Concurrent Quality Detection**: Parallel resolution across playlist videos using multi-threaded workers (`ThreadPoolExecutor`) for near-instant metadata inspection.
-- **Smart Quality Fallback**: Choose your preferred quality (`1080p`, `720p`, `480p`, `360p`, or `best`). If a video lacks your requested resolution, the engine automatically selects the highest available resolution without stopping the queue.
-- **Real-Time Progress & Speed**: Dynamic streaming progress bars in both CLI (clean in-place unicode bar with live transfer rate and byte counters) and GUI (dual-progress bars for overall queue and active file).
-- **Export Links for Download Managers**: Generate clean `.txt` files containing direct CDN download links and video titles, ready for batch import into Internet Download Manager (IDM), aria2, wget, or curl.
-- **Modern Persian RTL GUI**: Beautiful PyQt5 dark Fusion interface built natively with Right-to-Left (RTL) Persian layout, interactive video table, destination browser, cancellation token support, and one-click folder opening.
-- **Scriptable & Interactive CLI**: Use guided interactive prompts or automate downloads using command-line arguments. Works headless on servers without GUI dependencies.
-- **Clean Python API**: Programmatic access through `AparatClient` with full typing annotations.
+---
+
+## 🔎 Overview
+
+**Aparat Playlist Downloader** is a comprehensive, production-grade tool designed to download videos and complete playlists from [Aparat](https://www.aparat.com/) (آپارات) — Iran's leading video-sharing network. Whether you are archiving entire educational courses, batch downloading music playlists, or scraping high-resolution MP4 links for external download managers like **IDM (Internet Download Manager)** or **aria2**, this tool provides both an intuitive dark-themed GUI and an automated, scriptable CLI.
+
+---
+
+## 🌟 Key Features
+
+- **Universal Input Resolution**: Easily handle both **playlists** (by numeric ID or full URL) and **individual videos** (by alphanumeric UID or URL).
+- **Multi-threaded Quality Detection**: Parallel resolution across playlist videos using multi-threaded workers (`ThreadPoolExecutor`) for instantaneous metadata extraction.
+- **Smart Adaptive Fallback**: Request your target resolution (`1080p`, `720p`, `480p`, `360p`, or `best`). If a specific video does not offer the requested quality, the engine automatically falls back to the highest available resolution without breaking the queue.
+- **Real-Time Transfer Metrics**: Streaming progress tracking in both CLI (unicode progress bar with ETA, percentage, and live MB/s throughput) and GUI (dual-progress bars for overall batch and active file).
+- **Batch Link Export for Download Managers**: Generates structured `.txt` lists containing direct CDN download links and clean video titles for one-click import into Internet Download Manager (IDM), aria2, wget, or curl.
+- **Modern Persian RTL GUI**: Responsive PyQt5 interface styled with the dark Fusion palette, supporting native Right-to-Left (RTL) Persian typography, video summary table, quality selector, and one-click folder opening.
+- **Automated / Headless CLI**: Interactive guided wizard for casual users, plus full support for headless CLI flags for automation on Linux servers and CI/CD pipelines.
+- **Clean Python Library**: Modular and typed Python engine via `AparatClient` for seamless integration into custom scrapers and bots.
 
 ---
 
@@ -35,22 +62,22 @@
 | :--- | :--- | :--- |
 | **Playlist** | Numeric ID | `11402450` |
 | **Playlist** | Full URL | `https://www.aparat.com/playlist/11402450` |
-| **Video** | Alphanumeric Hash | `nbl9l8o` |
-| **Video** | Full URL | `https://www.aparat.com/v/nbl9l8o` |
+| **Single Video** | Alphanumeric Hash | `nbl9l8o` |
+| **Single Video** | Full URL | `https://www.aparat.com/v/nbl9l8o` |
 
 ---
 
 ## 📦 Installation
 
 ### Standalone Executables (No Python Required)
-Pre-compiled standalone binaries for **Windows**, **Linux**, and **macOS** (both Apple Silicon and Intel) are automatically built and published for each release:
+Pre-compiled standalone binaries for **Windows**, **Linux**, and **macOS** (Apple Silicon & Intel) are automatically built and published for each release:
 - Visit the **[GitHub Releases](https://github.com/alibakhtiari/aparat_playlist_downloader/releases)** page.
-- Download the executable for your operating system:
+- Download the executable for your platform:
   - **Windows (x86_64)**: `aparat-dl-windows-amd64.exe` (CLI), `aparat-gui-windows-amd64.exe` (GUI)
   - **Linux (x86_64)**: `aparat-dl-linux-amd64` (CLI), `aparat-gui-linux-amd64` (GUI)
   - **macOS (Apple Silicon arm64)**: `aparat-dl-macos-arm64` (CLI), `aparat-gui-macos-arm64` (GUI)
   - **macOS (Intel x86_64)**: `aparat-dl-macos-x86_64` (CLI), `aparat-gui-macos-x86_64` (GUI)
-- Run directly without installing Python or dependencies!
+- Run directly with no external runtime dependencies!
 
 ### Prerequisites (Source Installation)
 - Python 3.8 or higher
@@ -233,15 +260,32 @@ aparat_playlist_downloader/
 ├── core.py                 # Core engine: API client, concurrency, parser, streaming downloader
 ├── cli.py                  # CLI interface: interactive prompts, tables, progress bars
 ├── gui.py                  # GUI interface: PyQt5 modern dark UI with Persian RTL layout
-├── test_core.py            # Unit tests for core engine (input parser, API, downloader)
-├── test_cli.py             # Unit tests for CLI functions and arguments
-├── test_gui.py             # Unit tests for GUI components and worker threads
+├── tests/                  # Complete test suite (81 tests)
+│   ├── __init__.py         # Package marker
+│   ├── test_core.py        # Tests for core engine (parser, API, downloader)
+│   ├── test_cli.py         # Tests for CLI functions and arguments
+│   └── test_gui.py         # Tests for GUI components and worker threads
 ├── requirements.txt        # Full dependencies (PyQt5, requests)
 ├── cli_requirements.txt    # Minimal CLI dependencies (requests only)
-├── pyproject.toml          # Project package metadata & entry points (aparat-dl, aparat-gui)
+├── pyproject.toml          # Package configuration & entry points (aparat-dl, aparat-gui)
+├── download-icon.png       # Application icon
 ├── LICENSE                 # MIT License
 ├── README.md               # English documentation
 └── README.fa.md            # Persian documentation (راهنمای فارسی)
+```
+
+---
+
+## 🧪 Running Tests
+
+The test suite includes 81 unit tests covering CLI parsing, network retry handling, filename sanitization, concurrent quality fetch, and GUI thread states:
+
+```bash
+# Run all tests using pytest
+python -m pytest
+
+# Run with verbose output
+python -m pytest -v
 ```
 
 ---
@@ -259,7 +303,17 @@ Contributions, bug reports, and feature requests are welcome!
 
 ## 👤 Author & Maintainer
 
-Developed and maintained by **Ali Bakhtiari** ([@alibakhtiari](https://github.com/alibakhtiari)).
+Developed and maintained with ❤️ by **Ali Bakhtiari** ([@alibakhtiari](https://github.com/alibakhtiari)).
+
+- 🌐 **Personal Website & Portfolio**: [aliib.ir](https://aliib.ir)
+- 🚀 **Web Development & Digital Solutions**: [webabc.ir](https://webabc.ir)
+- 🐙 **GitHub Profile**: [@alibakhtiari](https://github.com/alibakhtiari)
+
+---
+
+## 🏷️ Keywords & SEO Tags
+
+`aparat` `aparat-downloader` `aparat-playlist-downloader` `aparat-video-downloader` `aparat-dl` `python` `pyqt5` `gui` `cli` `idm-export` `batch-download` `video-downloader` `aria2` `iranian-video-downloader` `آپارات` `دانلودر-آپارات` `دانلود-پلی-لیست-آپارات`
 
 ---
 
